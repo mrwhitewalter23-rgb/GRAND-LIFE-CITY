@@ -1,0 +1,834 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Grand Life City - Ultimate Mystery Box Launch</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Font Awesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@700;900&family=Orbitron:wght@500;700;900&family=Rajdhani:wght@500;600;700&display=swap" rel="stylesheet">
+
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        gold: {
+                            100: '#FFF8E1',
+                            300: '#FFE082',
+                            400: '#FFCA28',
+                            500: '#FFD700',
+                            600: '#FFB300',
+                            700: '#FF8F00',
+                            800: '#FF6F00',
+                        },
+                        darkobsidian: '#090a0d',
+                    },
+                    fontFamily: {
+                        orbitron: ['Orbitron', 'sans-serif'],
+                        cinzel: ['Cinzel', 'serif'],
+                        rajdhani: ['Rajdhani', 'sans-serif'],
+                    }
+                }
+            }
+        }
+    </script>
+
+    <style>
+        body {
+            background-color: #060709;
+            color: #f1f5f9;
+            font-family: 'Rajdhani', sans-serif;
+            overflow-x: hidden;
+            user-select: none;
+        }
+
+        /* Glowing text effects */
+        .text-glow-gold {
+            text-shadow: 0 0 10px rgba(255, 215, 0, 0.6), 0 0 25px rgba(255, 179, 0, 0.4), 0 0 40px rgba(255, 143, 0, 0.2);
+        }
+        .text-glow-cyber {
+            text-shadow: 0 0 12px rgba(234, 179, 8, 0.8), 0 0 30px rgba(217, 119, 6, 0.5);
+        }
+        .box-glow-gold {
+            box-shadow: 0 0 35px -5px rgba(255, 215, 0, 0.35), inset 0 0 15px rgba(255, 215, 0, 0.2);
+        }
+
+        /* Custom scrollbar */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #090a0d;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #332305;
+            border-radius: 4px;
+            border: 1px solid #ffb300;
+        }
+
+        /* Hero 3D Box Container */
+        .box-stage {
+            perspective: 1200px;
+        }
+
+        .box-3d {
+            position: relative;
+            width: 320px;
+            height: 240px;
+            transform-style: preserve-3d;
+            transition: transform 0.15s ease-out;
+            cursor: grab;
+        }
+
+        .box-3d:active {
+            cursor: grabbing;
+        }
+
+        /* Box Surfaces */
+        .box-face {
+            position: absolute;
+            background: linear-gradient(135deg, #18191f 0%, #0d0e12 60%, #050507 100%);
+            border: 4px solid #cca132;
+            box-shadow: inset 0 0 25px rgba(0,0,0,0.9), 0 0 15px rgba(255, 191, 0, 0.3);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            backface-visibility: visible;
+        }
+
+        .box-front { width: 320px; height: 200px; transform: translateZ(120px); }
+        .box-back { width: 320px; height: 200px; transform: rotateY(180deg) translateZ(120px); }
+        .box-right { width: 240px; height: 200px; transform: rotateY(90deg) translateZ(200px); }
+        .box-left { width: 240px; height: 200px; transform: rotateY(-90deg) translateZ(120px); }
+        .box-top { width: 320px; height: 240px; transform: rotateX(90deg) translateZ(120px); transform-origin: back; transition: transform 0.8s cubic-bezier(0.34, 1.56, 0.64, 1); }
+        .box-bottom { width: 320px; height: 240px; transform: rotateX(-90deg) translateZ(80px); background: #000; }
+
+        /* Golden Corner Brackets */
+        .corner-metal {
+            position: absolute;
+            width: 38px;
+            height: 38px;
+            border: 4px solid #ffd700;
+            box-shadow: 0 0 10px #ffaa00;
+            background: radial-gradient(circle, #ffe57f 0%, #b38f00 100%);
+        }
+        .tl { top: -2px; left: -2px; border-right: none; border-bottom: none; }
+        .tr { top: -2px; right: -2px; border-left: none; border-bottom: none; }
+        .bl { bottom: -2px; left: -2px; border-right: none; border-top: none; }
+        .br { bottom: -2px; right: -2px; border-left: none; border-top: none; }
+
+        /* Glowing Question Mark Icon */
+        .glow-qmark {
+            font-family: 'Cinzel', serif;
+            font-weight: 900;
+            color: #fff;
+            text-shadow: 0 0 10px #ffe082, 0 0 20px #ffb300, 0 0 40px #ff6f00, 0 0 60px #ff8f00;
+            animation: pulseQ 2s infinite alternate ease-in-out;
+        }
+
+        @keyframes pulseQ {
+            0% { transform: scale(0.98); filter: drop-shadow(0 0 10px rgba(255,215,0,0.8)); }
+            100% { transform: scale(1.06); filter: drop-shadow(0 0 25px rgba(255,179,0,1)); }
+        }
+
+        /* Light Ray Sheen Effect */
+        .ray-beam {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 300px;
+            height: 300px;
+            background: radial-gradient(circle, rgba(255,215,0,0.4) 0%, rgba(255,140,0,0.15) 40%, rgba(0,0,0,0) 70%);
+            transform: translate(-50%, -50%);
+            pointer-events: none;
+            mix-blend-mode: screen;
+        }
+
+        /* Shaking effect on charge */
+        .shake-intense {
+            animation: shakeAnim 0.08s infinite alternate;
+        }
+        @keyframes shakeAnim {
+            0% { transform: rotateX(15deg) rotateY(-20deg) translate3d(-3px, 2px, 0); }
+            100% { transform: rotateX(17deg) rotateY(-17deg) translate3d(3px, -2px, 0); }
+        }
+
+        /* Glassmorphism Card styling */
+        .glass-panel {
+            background: rgba(15, 17, 23, 0.75);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 215, 0, 0.2);
+            box-shadow: 0 15px 35px rgba(0,0,0,0.6);
+        }
+
+        .glass-gold-hover {
+            transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+        }
+        .glass-gold-hover:hover {
+            border-color: rgba(255, 215, 0, 0.7);
+            transform: translateY(-5px);
+            box-shadow: 0 20px 40px rgba(255, 179, 0, 0.25);
+        }
+
+        /* Modal Blur */
+        .modal-bg {
+            background: rgba(5, 6, 8, 0.88);
+            backdrop-filter: blur(16px);
+        }
+    </style>
+</head>
+<body class="relative min-h-screen flex flex-col justify-between selection:bg-gold-500 selection:text-black">
+
+    <!-- Dynamic Atmospheric Canvas Background -->
+    <canvas id="bgCanvas" class="fixed inset-0 w-full h-full pointer-events-none z-0"></canvas>
+
+    <!-- Top Navigation / Brand Header -->
+    <header class="relative z-20 w-full px-6 py-5 flex items-center justify-between border-b border-gold-500/20 bg-darkobsidian/60 backdrop-blur-md">
+        <div class="flex items-center space-x-3">
+            <div class="w-10 h-10 rounded-lg bg-gradient-to-br from-gold-400 to-gold-700 flex items-center justify-center shadow-lg shadow-gold-500/30">
+                <i class="fa-solid font-black text-black text-xl">GL</i>
+            </div>
+            <div>
+                <h1 class="font-orbitron font-extrabold text-xl md:text-2xl tracking-wider text-transparent bg-clip-text bg-gradient-to-r from-gold-300 via-gold-500 to-amber-600">
+                    GRAND LIFE CITY
+                </h1>
+                <p class="text-xs font-rajdhani text-amber-200/60 uppercase tracking-widest font-semibold">Official Mystery Crate Drop</p>
+            </div>
+        </div>
+
+        <!-- Audio & Sound System Toggle -->
+        <div class="flex items-center space-x-4">
+            <button id="soundToggleBtn" onclick="toggleAudio()" class="px-4 py-2 rounded-full border border-gold-500/40 bg-gold-950/40 hover:bg-gold-500/20 text-gold-400 font-orbitron text-xs flex items-center space-x-2 transition-all duration-300 shadow-md">
+                <i id="soundIcon" class="fa-solid fa-volume-xmark text-amber-400"></i>
+                <span id="soundLabel">SOUND: OFF</span>
+            </button>
+            <a href="#pre-register" class="hidden sm:inline-flex px-5 py-2 rounded-lg bg-gradient-to-r from-gold-500 to-amber-600 hover:from-gold-400 hover:to-amber-500 text-black font-orbitron font-bold text-xs uppercase tracking-wider transition-all duration-300 shadow-lg shadow-gold-500/20 transform hover:scale-105">
+                Claim VIP Pass
+            </a>
+        </div>
+    </header>
+
+    <!-- Main Hero Section -->
+    <main class="relative z-10 container mx-auto px-4 py-8 flex flex-col items-center">
+        
+        <!-- Drop Date Badge -->
+        <div class="inline-flex items-center space-x-2 px-4 py-1.5 rounded-full border border-gold-500/50 bg-amber-950/30 backdrop-blur-md mb-6 animate-pulse">
+            <span class="w-2.5 h-2.5 rounded-full bg-gold-400 shadow-[0_0_8px_#ffd700]"></span>
+            <span class="font-orbitron text-xs md:text-sm font-bold text-gold-300 tracking-widest uppercase">
+                GLOBAL LAUNCH: OCTOBER 29, 2026
+            </span>
+        </div>
+
+        <h2 class="font-cinzel text-3xl md:text-6xl font-black text-center text-transparent bg-clip-text bg-gradient-to-b from-white via-gold-300 to-gold-600 text-glow-gold max-w-4xl tracking-wide uppercase leading-tight">
+            THE OBSIDIAN GOLD MYSTERY CHEST
+        </h2>
+        <p class="mt-3 text-gray-300 font-rajdhani text-base md:text-xl text-center max-w-2xl font-medium tracking-wide">
+            Unleash mythic hypercars, penthouse keys, and ultra-rare luxury assets in Grand Life City.
+        </p>
+
+        <!-- Dynamic Live Countdown Timer -->
+        <div class="w-full max-w-3xl my-8 glass-panel rounded-2xl p-4 md:p-6 border border-gold-500/30 shadow-2xl">
+            <div class="text-center font-orbitron text-xs text-amber-400/80 tracking-widest uppercase mb-4">
+                <i class="fa-solid fa-clock mr-2"></i> Time Remaining Until Unboxing Opens
+            </div>
+            <div class="grid grid-cols-4 gap-2 md:gap-6 text-center">
+                <div class="bg-black/60 rounded-xl p-3 md:p-4 border border-gold-500/20 relative overflow-hidden group">
+                    <div class="text-2xl md:text-5xl font-orbitron font-extrabold text-gold-400 text-glow-cyber" id="cdDays">00</div>
+                    <div class="text-[10px] md:text-xs font-rajdhani text-amber-200/70 font-bold uppercase tracking-widest mt-1">Days</div>
+                    <div class="absolute inset-0 bg-gradient-to-t from-gold-500/10 to-transparent pointer-events-none"></div>
+                </div>
+                <div class="bg-black/60 rounded-xl p-3 md:p-4 border border-gold-500/20 relative overflow-hidden group">
+                    <div class="text-2xl md:text-5xl font-orbitron font-extrabold text-gold-400 text-glow-cyber" id="cdHours">00</div>
+                    <div class="text-[10px] md:text-xs font-rajdhani text-amber-200/70 font-bold uppercase tracking-widest mt-1">Hours</div>
+                    <div class="absolute inset-0 bg-gradient-to-t from-gold-500/10 to-transparent pointer-events-none"></div>
+                </div>
+                <div class="bg-black/60 rounded-xl p-3 md:p-4 border border-gold-500/20 relative overflow-hidden group">
+                    <div class="text-2xl md:text-5xl font-orbitron font-extrabold text-gold-400 text-glow-cyber" id="cdMins">00</div>
+                    <div class="text-[10px] md:text-xs font-rajdhani text-amber-200/70 font-bold uppercase tracking-widest mt-1">Minutes</div>
+                    <div class="absolute inset-0 bg-gradient-to-t from-gold-500/10 to-transparent pointer-events-none"></div>
+                </div>
+                <div class="bg-black/60 rounded-xl p-3 md:p-4 border border-gold-500/20 relative overflow-hidden group">
+                    <div class="text-2xl md:text-5xl font-orbitron font-extrabold text-amber-300 text-glow-cyber" id="cdSecs">00</div>
+                    <div class="text-[10px] md:text-xs font-rajdhani text-amber-200/70 font-bold uppercase tracking-widest mt-1">Seconds</div>
+                    <div class="absolute inset-0 bg-gradient-to-t from-gold-500/10 to-transparent pointer-events-none"></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 3D INTERACTIVE MYSTERY BOX CONTAINER -->
+        <div class="relative w-full my-6 py-10 flex flex-col items-center justify-center">
+            <!-- Radiant Ground Glow Reflection -->
+            <div class="absolute bottom-6 w-96 h-24 bg-gold-500/25 blur-3xl rounded-full pointer-events-none"></div>
+            <div class="ray-beam opacity-80"></div>
+
+            <!-- 3D Box Stage -->
+            <div class="box-stage my-8">
+                <div id="box3d" class="box-3d" style="transform: rotateX(15deg) rotateY(-20deg);">
+                    
+                    <!-- Front Face -->
+                    <div class="box-face box-front">
+                        <div class="corner-metal tl"></div>
+                        <div class="corner-metal tr"></div>
+                        <div class="corner-metal bl"></div>
+                        <div class="corner-metal br"></div>
+                        <div class="text-7xl glow-qmark">?</div>
+                        <!-- Golden Lock / Seam -->
+                        <div class="absolute top-0 left-1/2 transform -translate-x-1/2 w-12 h-10 bg-gradient-to-b from-gold-300 to-amber-700 border border-gold-300 rounded-b-md shadow-lg flex items-center justify-center">
+                            <i class="fa-solid fa-lock text-black text-xs"></i>
+                        </div>
+                    </div>
+
+                    <!-- Back Face -->
+                    <div class="box-face box-back">
+                        <div class="corner-metal tl"></div>
+                        <div class="corner-metal tr"></div>
+                        <div class="corner-metal bl"></div>
+                        <div class="corner-metal br"></div>
+                        <div class="text-6xl glow-qmark opacity-60">?</div>
+                    </div>
+
+                    <!-- Right Face -->
+                    <div class="box-face box-right">
+                        <div class="corner-metal tl"></div>
+                        <div class="corner-metal tr"></div>
+                        <div class="corner-metal bl"></div>
+                        <div class="corner-metal br"></div>
+                        <div class="w-16 h-16 border-2 border-gold-500/50 rounded-full flex items-center justify-center">
+                            <i class="fa-solid fa-crown text-gold-400 text-2xl"></i>
+                        </div>
+                    </div>
+
+                    <!-- Left Face -->
+                    <div class="box-face box-left">
+                        <div class="corner-metal tl"></div>
+                        <div class="corner-metal tr"></div>
+                        <div class="corner-metal bl"></div>
+                        <div class="corner-metal br"></div>
+                        <div class="w-16 h-16 border-2 border-gold-500/50 rounded-full flex items-center justify-center">
+                            <i class="fa-solid fa-gem text-gold-400 text-2xl"></i>
+                        </div>
+                    </div>
+
+                    <!-- Top Lid Face -->
+                    <div id="boxTopLid" class="box-face box-top">
+                        <div class="corner-metal tl"></div>
+                        <div class="corner-metal tr"></div>
+                        <div class="corner-metal bl"></div>
+                        <div class="corner-metal br"></div>
+                        <div class="text-7xl glow-qmark">?</div>
+                    </div>
+
+                    <!-- Bottom Face -->
+                    <div class="box-face box-bottom"></div>
+                </div>
+            </div>
+
+            <!-- Box Controls & Actions -->
+            <div class="flex flex-wrap items-center justify-center gap-4 mt-6 z-20">
+                <button id="chargeBtn" onclick="chargeEnergy()" class="px-6 py-3 rounded-xl bg-gradient-to-r from-amber-900/80 to-amber-950/80 border border-gold-500/50 hover:border-gold-400 text-gold-300 font-orbitron font-bold text-xs md:text-sm tracking-wider uppercase transition-all duration-300 shadow-lg hover:shadow-gold-500/20 flex items-center space-x-2">
+                    <i class="fa-solid fa-bolt text-gold-400 animate-bounce"></i>
+                    <span>Charge Energy</span>
+                </button>
+
+                <button id="unboxBtn" onclick="triggerTeaserUnbox()" class="px-8 py-3.5 rounded-xl bg-gradient-to-r from-gold-500 via-amber-500 to-gold-600 hover:from-gold-400 hover:to-amber-400 text-black font-orbitron font-extrabold text-sm md:text-base tracking-widest uppercase transition-all duration-300 shadow-xl shadow-gold-500/30 transform hover:scale-105 flex items-center space-x-3">
+                    <i class="fa-solid fa-box-open text-lg"></i>
+                    <span>Try Teaser Unbox</span>
+                </button>
+            </div>
+
+            <p class="text-xs text-amber-300/60 font-rajdhani mt-3 tracking-wider">
+                <i class="fa-solid fa-hand-pointer mr-1"></i> Drag / Click box to inspect energy & 3D perspectives
+            </p>
+        </div>
+
+        <!-- LOOT REWARDS SHOWCASE SECTION -->
+        <section class="w-full max-w-6xl my-16">
+            <div class="text-center mb-10">
+                <span class="text-gold-400 font-orbitron text-xs font-semibold tracking-widest uppercase">Classified Contents</span>
+                <h3 class="text-3xl md:text-4xl font-cinzel font-black text-white mt-1">POSSIBLE LOOT REWARDS</h3>
+                <p class="text-gray-400 font-rajdhani text-base max-w-xl mx-auto mt-2">
+                    Every Obsidian Gold Box guarantees high-grade VIP assets for your Grand Life City empire.
+                </p>
+            </div>
+
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+                <!-- Item 1: Mythic Hypercar -->
+                <div class="glass-panel glass-gold-hover rounded-2xl p-5 relative overflow-hidden flex flex-col justify-between group">
+                    <div class="absolute top-3 right-3 px-2.5 py-1 rounded-full bg-gradient-to-r from-purple-600 to-pink-600 text-white font-orbitron text-[10px] font-extrabold tracking-widest shadow-md">
+                        MYTHIC (0.5%)
+                    </div>
+                    <div class="h-40 my-3 flex items-center justify-center relative">
+                        <div class="absolute inset-0 bg-gradient-to-b from-purple-500/10 to-transparent rounded-xl pointer-events-none"></div>
+                        <i class="fa-solid fa-car-side text-6xl text-purple-300 group-hover:scale-110 transition-transform duration-300 drop-shadow-[0_0_15px_rgba(168,85,247,0.5)]"></i>
+                    </div>
+                    <div>
+                        <h4 class="font-orbitron font-bold text-lg text-white group-hover:text-gold-300 transition-colors">VAPOR GT HYPERCAR</h4>
+                        <p class="text-xs text-gray-400 font-rajdhani mt-1">Quad-turbo hybrid with custom gold-foil neon underglow.</p>
+                        <div class="mt-4 pt-3 border-t border-white/10 flex justify-between items-center text-xs font-orbitron text-amber-400">
+                            <span>VALUE: $2,500,000</span>
+                            <i class="fa-solid fa-arrow-right-long opacity-0 group-hover:opacity-100 transition-opacity"></i>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Item 2: Legendary Penthouse -->
+                <div class="glass-panel glass-gold-hover rounded-2xl p-5 relative overflow-hidden flex flex-col justify-between group">
+                    <div class="absolute top-3 right-3 px-2.5 py-1 rounded-full bg-gradient-to-r from-gold-500 to-amber-600 text-black font-orbitron text-[10px] font-extrabold tracking-widest shadow-md">
+                        LEGENDARY (2.0%)
+                    </div>
+                    <div class="h-40 my-3 flex items-center justify-center relative">
+                        <div class="absolute inset-0 bg-gradient-to-b from-gold-500/10 to-transparent rounded-xl pointer-events-none"></div>
+                        <i class="fa-solid fa-city text-6xl text-gold-300 group-hover:scale-110 transition-transform duration-300 drop-shadow-[0_0_15px_rgba(255,215,0,0.5)]"></i>
+                    </div>
+                    <div>
+                        <h4 class="font-orbitron font-bold text-lg text-white group-hover:text-gold-300 transition-colors">PENTHOUSE PASS</h4>
+                        <p class="text-xs text-gray-400 font-rajdhani mt-1">Diamond-tier sky deck suite overlooking Downtown Bay.</p>
+                        <div class="mt-4 pt-3 border-t border-white/10 flex justify-between items-center text-xs font-orbitron text-amber-400">
+                            <span>VALUE: $5,000,000</span>
+                            <i class="fa-solid fa-arrow-right-long opacity-0 group-hover:opacity-100 transition-opacity"></i>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Item 3: Exotic Katana -->
+                <div class="glass-panel glass-gold-hover rounded-2xl p-5 relative overflow-hidden flex flex-col justify-between group">
+                    <div class="absolute top-3 right-3 px-2.5 py-1 rounded-full bg-gradient-to-r from-amber-600 to-orange-700 text-white font-orbitron text-[10px] font-extrabold tracking-widest shadow-md">
+                        EPIC (7.5%)
+                    </div>
+                    <div class="h-40 my-3 flex items-center justify-center relative">
+                        <div class="absolute inset-0 bg-gradient-to-b from-amber-500/10 to-transparent rounded-xl pointer-events-none"></div>
+                        <i class="fa-solid fa-shield-halved text-6xl text-amber-400 group-hover:scale-110 transition-transform duration-300 drop-shadow-[0_0_15px_rgba(245,158,11,0.5)]"></i>
+                    </div>
+                    <div>
+                        <h4 class="font-orbitron font-bold text-lg text-white group-hover:text-gold-300 transition-colors">CYBER KATANA</h4>
+                        <p class="text-xs text-gray-400 font-rajdhani mt-1">Thermal plasma edge blade with custom kill counters.</p>
+                        <div class="mt-4 pt-3 border-t border-white/10 flex justify-between items-center text-xs font-orbitron text-amber-400">
+                            <span>VALUE: $750,000</span>
+                            <i class="fa-solid fa-arrow-right-long opacity-0 group-hover:opacity-100 transition-opacity"></i>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Item 4: Luxury Jet -->
+                <div class="glass-panel glass-gold-hover rounded-2xl p-5 relative overflow-hidden flex flex-col justify-between group">
+                    <div class="absolute top-3 right-3 px-2.5 py-1 rounded-full bg-gradient-to-r from-blue-600 to-cyan-600 text-white font-orbitron text-[10px] font-extrabold tracking-widest shadow-md">
+                        RARE (15.0%)
+                    </div>
+                    <div class="h-40 my-3 flex items-center justify-center relative">
+                        <div class="absolute inset-0 bg-gradient-to-b from-blue-500/10 to-transparent rounded-xl pointer-events-none"></div>
+                        <i class="fa-solid fa-plane text-6xl text-cyan-300 group-hover:scale-110 transition-transform duration-300 drop-shadow-[0_0_15px_rgba(6,182,212,0.5)]"></i>
+                    </div>
+                    <div>
+                        <h4 class="font-orbitron font-bold text-lg text-white group-hover:text-gold-300 transition-colors">VIP GOLD JET</h4>
+                        <p class="text-xs text-gray-400 font-rajdhani mt-1">Private high-speed jet with luxury champagne bar.</p>
+                        <div class="mt-4 pt-3 border-t border-white/10 flex justify-between items-center text-xs font-orbitron text-amber-400">
+                            <span>VALUE: $3,800,000</span>
+                            <i class="fa-solid fa-arrow-right-long opacity-0 group-hover:opacity-100 transition-opacity"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- PRE-REGISTER / CLAIM CRATE KEY FORM -->
+        <section id="pre-register" class="w-full max-w-3xl my-10 glass-panel rounded-3xl p-6 md:p-10 border border-gold-500/40 relative overflow-hidden">
+            <div class="absolute top-0 right-0 w-64 h-64 bg-gold-500/10 rounded-full blur-3xl pointer-events-none"></div>
+            
+            <div class="text-center mb-8">
+                <i class="fa-solid fa-key text-3xl text-gold-400 mb-2"></i>
+                <h3 class="font-cinzel text-2xl md:text-3xl font-black text-white">PRE-REGISTER FOR VIP ACCESS</h3>
+                <p class="text-gray-300 font-rajdhani text-sm md:text-base mt-1">
+                    Reserve your guaranteed Golden Crate Key + receive instant SMS/Email notification on October 29, 2026.
+                </p>
+            </div>
+
+            <form id="vipForm" onsubmit="handlePreRegister(event)" class="space-y-4">
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div>
+                        <label class="block text-xs font-orbitron text-gold-300 mb-1">CITIZEN NAME / ALIAS</label>
+                        <input type="text" required placeholder="e.g. Maverick V" class="w-full px-4 py-3 rounded-xl bg-black/60 border border-gold-500/30 focus:border-gold-400 focus:outline-none text-white text-sm font-rajdhani">
+                    </div>
+                    <div>
+                        <label class="block text-xs font-orbitron text-gold-300 mb-1">EMAIL ADDRESS</label>
+                        <input type="email" required placeholder="vip@grandlifecity.com" class="w-full px-4 py-3 rounded-xl bg-black/60 border border-gold-500/30 focus:border-gold-400 focus:outline-none text-white text-sm font-rajdhani">
+                    </div>
+                </div>
+
+                <div>
+                    <label class="block text-xs font-orbitron text-gold-300 mb-1">PREFERRED GAMING PLATFORM</label>
+                    <select class="w-full px-4 py-3 rounded-xl bg-black/60 border border-gold-500/30 focus:border-gold-400 focus:outline-none text-white text-sm font-rajdhani">
+                        <option value="pc">PC / Steam / Epic Games</option>
+                        <option value="ps5">PlayStation 5</option>
+                        <option value="xbox">Xbox Series X|S</option>
+                    </select>
+                </div>
+
+                <button type="submit" class="w-full py-4 rounded-xl bg-gradient-to-r from-gold-500 via-amber-500 to-gold-600 hover:from-gold-400 hover:to-amber-400 text-black font-orbitron font-extrabold text-sm uppercase tracking-widest shadow-xl shadow-gold-500/25 transition-all duration-300 transform hover:scale-[1.01]">
+                    CLAIM GOLDEN CRATE KEY #2026
+                </button>
+            </form>
+
+            <div id="vipSuccessCard" class="hidden text-center py-8 space-y-4">
+                <div class="w-16 h-16 mx-auto rounded-full bg-gold-500/20 border-2 border-gold-400 flex items-center justify-center text-gold-400 text-2xl">
+                    <i class="fa-solid fa-check"></i>
+                </div>
+                <h4 class="font-orbitron font-bold text-xl text-gold-300">VIP ACCESS CONFIRMED!</h4>
+                <p class="text-sm text-gray-300 font-rajdhani">Your Golden Key code <span class="font-mono text-gold-400 font-bold" id="generatedKeyCode">GLC-GOLD-2026-X99</span> has been registered.</p>
+                <div class="p-3 bg-black/60 rounded-xl border border-gold-500/20 text-xs font-mono text-amber-200">
+                    STATUS: READY FOR UNBOXING ON OCT 29, 2026
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- UNBOX SIMULATOR MODAL PREVIEW -->
+    <div id="unboxModal" class="fixed inset-0 z-50 modal-bg hidden flex items-center justify-center p-4">
+        <div class="glass-panel w-full max-w-lg rounded-3xl border-2 border-gold-500 p-6 md:p-8 relative text-center shadow-[0_0_50px_rgba(255,215,0,0.3)] animate-fade-in">
+            <button onclick="closeModal()" class="absolute top-4 right-4 text-gray-400 hover:text-white text-xl">
+                <i class="fa-solid fa-xmark"></i>
+            </button>
+
+            <span class="px-3 py-1 rounded-full bg-gold-500/20 border border-gold-400 text-gold-300 font-orbitron text-[10px] uppercase tracking-widest">
+                TEASER LOOT DROP UNLOCKED
+            </span>
+
+            <div class="my-6 relative flex flex-col items-center">
+                <div class="w-32 h-32 rounded-2xl bg-gradient-to-br from-gold-400/20 to-amber-600/30 border-2 border-gold-400 flex items-center justify-center shadow-[0_0_30px_rgba(255,215,0,0.4)] animate-bounce">
+                    <i id="lootModalIcon" class="fa-solid fa-car-side text-6xl text-gold-300"></i>
+                </div>
+                <h3 id="lootModalTitle" class="font-orbitron text-2xl font-black text-white mt-4">VAPOR GT HYPERCAR</h3>
+                <p id="lootModalRarity" class="text-xs font-orbitron text-purple-400 font-bold mt-1">MYTHIC ITEM REVEALED</p>
+                <p id="lootModalDesc" class="text-sm text-gray-300 font-rajdhani mt-2">
+                    Congratulations! You simulated a mythic drop. This exclusive vehicle will be transferred to your garage upon official server release on Oct 29, 2026.
+                </p>
+            </div>
+
+            <button onclick="closeModal()" class="w-full py-3 rounded-xl bg-gradient-to-r from-gold-500 to-amber-600 text-black font-orbitron font-extrabold text-xs uppercase tracking-widest shadow-lg hover:from-gold-400 hover:to-amber-500">
+                COLLECT PREVIEW ITEM
+            </button>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="relative z-10 w-full py-6 border-t border-gold-500/20 bg-darkobsidian/80 text-center text-xs text-gray-500 font-rajdhani">
+        <p>© 2026 Grand Life City Interactive. All Rights Reserved. Mystery Crate Drop Launch Event.</p>
+    </footer>
+
+    <script>
+        /* -------------------------------------------------------------
+           1. WEB AUDIO API SYNTHESIZER SYSTEM
+        ------------------------------------------------------------- */
+        let audioCtx = null;
+        let isAudioOn = false;
+        let ambientOsc = null;
+        let ambientGain = null;
+
+        function initAudio() {
+            if (!audioCtx) {
+                audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+            }
+        }
+
+        function toggleAudio() {
+            initAudio();
+            if (audioCtx.state === 'suspended') {
+                audioCtx.resume();
+            }
+
+            isAudioOn = !isAudioOn;
+            const btn = document.getElementById('soundToggleBtn');
+            const icon = document.getElementById('soundIcon');
+            const label = document.getElementById('soundLabel');
+
+            if (isAudioOn) {
+                btn.classList.add('bg-gold-500/30', 'border-gold-400');
+                icon.className = 'fa-solid fa-volume-high text-gold-300';
+                label.innerText = 'SOUND: ON';
+                startAmbientDrone();
+                playTone(440, 'sine', 0.1, 0.2);
+            } else {
+                btn.classList.remove('bg-gold-500/30', 'border-gold-400');
+                icon.className = 'fa-solid fa-volume-xmark text-amber-400';
+                label.innerText = 'SOUND: OFF';
+                stopAmbientDrone();
+            }
+        }
+
+        function playTone(freq, type, duration, vol = 0.1) {
+            if (!isAudioOn || !audioCtx) return;
+            try {
+                const osc = audioCtx.createOscillator();
+                const gain = audioCtx.createGain();
+                osc.type = type;
+                osc.frequency.setValueAtTime(freq, audioCtx.currentTime);
+                gain.gain.setValueAtTime(vol, audioCtx.currentTime);
+                gain.gain.exponentialRampToValueAtTime(0.0001, audioCtx.currentTime + duration);
+                osc.connect(gain);
+                gain.connect(audioCtx.destination);
+                osc.start();
+                osc.stop(audioCtx.currentTime + duration);
+            } catch(e){}
+        }
+
+        function startAmbientDrone() {
+            if (!isAudioOn || ambientOsc) return;
+            try {
+                ambientOsc = audioCtx.createOscillator();
+                ambientGain = audioCtx.createGain();
+                ambientOsc.type = 'sawtooth';
+                ambientOsc.frequency.setValueAtTime(55, audioCtx.currentTime); // Low A drone
+                ambientGain.gain.setValueAtTime(0.015, audioCtx.currentTime);
+                
+                // Low pass filter for dark sci-fi ambient
+                const filter = audioCtx.createBiquadFilter();
+                filter.type = 'lowpass';
+                filter.frequency.setValueAtTime(220, audioCtx.currentTime);
+
+                ambientOsc.connect(filter);
+                filter.connect(ambientGain);
+                ambientGain.connect(audioCtx.destination);
+                ambientOsc.start();
+            } catch(e){}
+        }
+
+        function stopAmbientDrone() {
+            if (ambientOsc) {
+                try {
+                    ambientOsc.stop();
+                    ambientOsc.disconnect();
+                } catch(e){}
+                ambientOsc = null;
+            }
+        }
+
+        function playUnboxSound() {
+            if (!isAudioOn || !audioCtx) return;
+            // Rising swoop sound effect
+            const osc = audioCtx.createOscillator();
+            const gain = audioCtx.createGain();
+            osc.type = 'triangle';
+            osc.frequency.setValueAtTime(150, audioCtx.currentTime);
+            osc.frequency.exponentialRampToValueAtTime(880, audioCtx.currentTime + 0.8);
+            gain.gain.setValueAtTime(0.2, audioCtx.currentTime);
+            gain.gain.linearRampToValueAtTime(0.001, audioCtx.currentTime + 0.9);
+            osc.connect(gain);
+            gain.connect(audioCtx.destination);
+            osc.start();
+            osc.stop(audioCtx.currentTime + 0.9);
+        }
+
+        /* -------------------------------------------------------------
+           2. COUNTDOWN TIMER ENGINE (Target: Oct 29, 2026)
+        ------------------------------------------------------------- */
+        const targetDate = new Date('October 29, 2026 00:00:00').getTime();
+
+        function updateCountdown() {
+            const now = new Date().getTime();
+            const distance = targetDate - now;
+
+            if (distance < 0) {
+                document.getElementById('cdDays').innerText = "00";
+                document.getElementById('cdHours').innerText = "00";
+                document.getElementById('cdMins').innerText = "00";
+                document.getElementById('cdSecs').innerText = "00";
+                return;
+            }
+
+            const days = Math.floor(distance / (1000 * 60 * 60 * 24));
+            const hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+            const minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
+            const seconds = Math.floor((distance % (1000 * 60)) / 1000);
+
+            document.getElementById('cdDays').innerText = days < 10 ? '0' + days : days;
+            document.getElementById('cdHours').innerText = hours < 10 ? '0' + hours : hours;
+            document.getElementById('cdMins').innerText = minutes < 10 ? '0' + minutes : minutes;
+            document.getElementById('cdSecs').innerText = seconds < 10 ? '0' + seconds : seconds;
+
+            // Subtle audio tick
+            if (isAudioOn && Math.random() < 0.1) {
+                playTone(800, 'sine', 0.05, 0.02);
+            }
+        }
+
+        setInterval(updateCountdown, 1000);
+        updateCountdown();
+
+        /* -------------------------------------------------------------
+           3. 3D INTERACTIVE BOX PERSPECTIVE & UNBOX SIMULATOR
+        ------------------------------------------------------------- */
+        const box3d = document.getElementById('box3d');
+        const boxTopLid = document.getElementById('boxTopLid');
+        let isDragging = false;
+        let previousMouseX = 0;
+        let previousMouseY = 0;
+        let rotX = 15;
+        let rotY = -20;
+
+        document.addEventListener('mousedown', (e) => {
+            if (e.target.closest('#box3d')) {
+                isDragging = true;
+                previousMouseX = e.clientX;
+                previousMouseY = e.clientY;
+            }
+        });
+
+        document.addEventListener('mousemove', (e) => {
+            if (!isDragging) return;
+            const deltaX = e.clientX - previousMouseX;
+            const deltaY = e.clientY - previousMouseY;
+
+            rotY += deltaX * 0.5;
+            rotX -= deltaY * 0.5;
+
+            box3d.style.transform = `rotateX(${rotX}deg) rotateY(${rotY}deg)`;
+
+            previousMouseX = e.clientX;
+            previousMouseY = e.clientY;
+        });
+
+        document.addEventListener('mouseup', () => { isDragging = false; });
+
+        function chargeEnergy() {
+            playTone(220, 'square', 0.4, 0.15);
+            box3d.classList.add('shake-intense');
+            setTimeout(() => {
+                playTone(550, 'sine', 0.3, 0.2);
+                box3d.classList.remove('shake-intense');
+            }, 600);
+            
+            // Spawn gold particle bursts
+            for (let i = 0; i < 25; i++) {
+                particles.push(new Particle(window.innerWidth / 2, window.innerHeight / 2 + 50, true));
+            }
+        }
+
+        const possibleLoot = [
+            { title: "VAPOR GT HYPERCAR", rarity: "MYTHIC (0.5%)", icon: "fa-car-side", desc: "Quad-turbo hybrid with custom gold-foil neon underglow." },
+            { title: "DIAMOND PENTHOUSE PASS", rarity: "LEGENDARY (2.0%)", icon: "fa-city", desc: "Sky deck suite overlooking Downtown Bay." },
+            { title: "CYBER PLASMA KATANA", rarity: "EPIC (7.5%)", icon: "fa-shield-halved", desc: "Thermal edge blade with custom kill counters." },
+            { title: "VIP GOLD JET", rarity: "RARE (15.0%)", icon: "fa-plane", desc: "Private high-speed jet with luxury champagne bar." }
+        ];
+
+        function triggerTeaserUnbox() {
+            playUnboxSound();
+            box3d.classList.add('shake-intense');
+            boxTopLid.style.transform = 'rotateX(140deg) translateZ(120px)';
+
+            setTimeout(() => {
+                box3d.classList.remove('shake-intense');
+                
+                // Select Random Loot
+                const item = possibleLoot[Math.floor(Math.random() * possibleLoot.length)];
+                document.getElementById('lootModalTitle').innerText = item.title;
+                document.getElementById('lootModalRarity').innerText = item.rarity;
+                document.getElementById('lootModalDesc').innerText = item.desc;
+                document.getElementById('lootModalIcon').className = `fa-solid ${item.icon} text-6xl text-gold-300`;
+
+                document.getElementById('unboxModal').classList.remove('hidden');
+            }, 800);
+        }
+
+        function closeModal() {
+            document.getElementById('unboxModal').classList.add('hidden');
+            boxTopLid.style.transform = 'rotateX(90deg) translateZ(120px)';
+        }
+
+        function handlePreRegister(e) {
+            e.preventDefault();
+            playTone(880, 'sine', 0.3, 0.2);
+            document.getElementById('vipForm').classList.add('hidden');
+            document.getElementById('vipSuccessCard').classList.remove('hidden');
+            document.getElementById('generatedKeyCode').innerText = 'GLC-KEY-' + Math.floor(100000 + Math.random() * 900000);
+        }
+
+        /* -------------------------------------------------------------
+           4. DYNAMIC CANVAS ATMOSPHERIC PARTICLE SYSTEM
+        ------------------------------------------------------------- */
+        const canvas = document.getElementById('bgCanvas');
+        const ctx = canvas.getContext('2d');
+        let particles = [];
+
+        function resizeCanvas() {
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+        }
+        window.addEventListener('resize', resizeCanvas);
+        resizeCanvas();
+
+        class Particle {
+            constructor(x, y, isBurst = false) {
+                this.x = x || Math.random() * canvas.width;
+                this.y = y || Math.random() * canvas.height;
+                this.size = Math.random() * 2.5 + 0.5;
+                this.speedX = (Math.random() - 0.5) * (isBurst ? 6 : 0.8);
+                this.speedY = isBurst ? (Math.random() - 0.5) * 6 : -Math.random() * 1.5 - 0.2;
+                this.color = `rgba(255, ${Math.floor(180 + Math.random() * 75)}, 0, ${Math.random() * 0.7 + 0.3})`;
+                this.life = isBurst ? 40 : 200;
+            }
+            update() {
+                this.x += this.speedX;
+                this.y += this.speedY;
+                this.life--;
+                if (this.size > 0.1) this.size -= 0.01;
+            }
+            draw() {
+                ctx.fillStyle = this.color;
+                ctx.shadowBlur = 10;
+                ctx.shadowColor = '#ffd700';
+                ctx.beginPath();
+                ctx.arc(this.x, this.y, Math.max(this.size, 0), 0, Math.PI * 2);
+                ctx.fill();
+            }
+        }
+
+        // Initialize Floating Ember Atmosphere
+        for (let i = 0; i < 70; i++) {
+            particles.push(new Particle());
+        }
+
+        // Mouse Trail Particles
+        window.addEventListener('mousemove', (e) => {
+            if (Math.random() < 0.3) {
+                particles.push(new Particle(e.clientX, e.clientY));
+            }
+        });
+
+        function animateCanvas() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+            // Draw Background Soft Ambient Light Shafts
+            const grad = ctx.createRadialGradient(canvas.width/2, canvas.height/2, 50, canvas.width/2, canvas.height/2, canvas.width * 0.6);
+            grad.addColorStop(0, 'rgba(255, 179, 0, 0.05)');
+            grad.addColorStop(1, 'rgba(0, 0, 0, 0)');
+            ctx.fillStyle = grad;
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+            for (let i = 0; i < particles.length; i++) {
+                particles[i].update();
+                particles[i].draw();
+
+                if (particles[i].life <= 0 || particles[i].size <= 0) {
+                    particles.splice(i, 1);
+                    i--;
+                    // Respawn regular ember
+                    if (particles.length < 70) {
+                        particles.push(new Particle());
+                    }
+                }
+            }
+            requestAnimationFrame(animateCanvas);
+        }
+
+        window.onload = function() {
+            animateCanvas();
+        };
+    </script>
+</body>
+</html>
